@@ -1,3 +1,9 @@
+Changes over bevy/main:
+
+- added fullscreen pass node
+
+---
+
 # [![Bevy](assets/branding/bevy_logo_light_small.svg)](https://bevyengine.org)
 
 [![Crates.io](https://img.shields.io/crates/v/bevy.svg)](https://crates.io/crates/bevy)
