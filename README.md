@@ -1,6 +1,8 @@
-Changes over bevy/main:
+Changes over `bevy/main`:
 
+from `mtsr/bevy`:
 - added fullscreen pass node
+- added global render resource node
 
 ---
 
