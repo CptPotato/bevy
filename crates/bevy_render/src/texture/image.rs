@@ -447,6 +447,10 @@ impl RenderAsset for Image {
             size,
         })
     }
+
+    const EXTRACT_LABEL: &'static str = "extract_images";
+
+    const PREPARE_LABEL: &'static str = "prepare_images";
 }
 
 #[cfg(test)]

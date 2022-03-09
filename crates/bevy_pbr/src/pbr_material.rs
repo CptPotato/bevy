@@ -334,6 +334,10 @@ impl RenderAsset for StandardMaterial {
             cull_mode: material.cull_mode,
         })
     }
+
+    const EXTRACT_LABEL: &'static str = "extract_standard_materials";
+
+    const PREPARE_LABEL: &'static str = "prepare_standard_materials";
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]

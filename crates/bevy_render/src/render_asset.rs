@@ -24,19 +24,33 @@ pub enum PrepareAssetError<E: Send + Sync + 'static> {
 pub trait RenderAsset: Asset {
     /// The representation of the the asset in the "render world".
     type ExtractedAsset: Send + Sync + 'static;
+
     /// The GPU-representation of the the asset.
     type PreparedAsset: Send + Sync + 'static;
+
     /// Specifies all ECS data required by [`RenderAsset::prepare_asset`].
     /// For convenience use the [`lifetimeless`](bevy_ecs::system::lifetimeless) [`SystemParam`].
     type Param: SystemParam;
+
+    /// extract asset system label
+    const EXTRACT_LABEL: &'static str;
+
+    /// prepare asset system label
+    const PREPARE_LABEL: &'static str;
+
     /// Converts the asset into a [`RenderAsset::ExtractedAsset`].
     fn extract_asset(&self) -> Self::ExtractedAsset;
+
     /// Prepares the `extracted asset` for the GPU by transforming it into
     /// a [`RenderAsset::PreparedAsset`]. Therefore ECS data may be accessed via the `param`.
     fn prepare_asset(
         extracted_asset: Self::ExtractedAsset,
         param: &mut SystemParamItem<Self::Param>,
     ) -> Result<Self::PreparedAsset, PrepareAssetError<Self::ExtractedAsset>>;
+
+    const EXTRACT_DEPENDENCIES: &'static [&'static str] = &[];
+    
+    const PREPARE_DEPENDENCIES: &'static [&'static str] = &[];
 }
 
 /// This plugin extracts the changed assets from the "app world" into the "render world"
@@ -55,13 +69,36 @@ impl<A: RenderAsset> Default for RenderAssetPlugin<A> {
 impl<A: RenderAsset> Plugin for RenderAssetPlugin<A> {
     fn build(&self, app: &mut App) {
         if let Ok(render_app) = app.get_sub_app_mut(RenderApp) {
-            let prepare_asset_system = PrepareAssetSystem::<A>::system(&mut render_app.world);
             render_app
                 .init_resource::<ExtractedAssets<A>>()
                 .init_resource::<RenderAssets<A>>()
-                .init_resource::<PrepareNextFrameAssets<A>>()
-                .add_system_to_stage(RenderStage::Extract, extract_render_asset::<A>)
-                .add_system_to_stage(RenderStage::Prepare, prepare_asset_system);
+                .init_resource::<PrepareNextFrameAssets<A>>();
+
+            // ugly but I didn't get it to compile otherwise (the type changes with the first `.after()`)
+
+            let extract_asset_system = extract_render_asset::<A>.label(A::EXTRACT_LABEL);
+            if A::EXTRACT_DEPENDENCIES.len() == 0 {
+                render_app.add_system_to_stage(RenderStage::Extract, extract_asset_system);
+            } else {
+                let mut extract_asset_system =
+                    extract_asset_system.after(A::EXTRACT_DEPENDENCIES[0]);
+                for dep in A::EXTRACT_DEPENDENCIES.iter().skip(1) {
+                    extract_asset_system = extract_asset_system.after(*dep);
+                }
+            }
+
+            let prepare_asset_system =
+                PrepareAssetSystem::<A>::system(&mut render_app.world).label(A::PREPARE_LABEL);
+            if A::PREPARE_DEPENDENCIES.len() == 0 {
+                render_app.add_system_to_stage(RenderStage::Prepare, prepare_asset_system);
+            } else {
+                let mut prepare_asset_system =
+                    prepare_asset_system.after(A::PREPARE_DEPENDENCIES[0]);
+                for dep in A::PREPARE_DEPENDENCIES.iter().skip(1) {
+                    prepare_asset_system = prepare_asset_system.after(*dep);
+                }
+                render_app.add_system_to_stage(RenderStage::Prepare, prepare_asset_system);
+            }
         }
     }
 }

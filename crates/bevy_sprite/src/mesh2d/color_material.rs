@@ -178,6 +178,10 @@ impl RenderAsset for ColorMaterial {
             texture: material.texture,
         })
     }
+
+    const EXTRACT_LABEL: &'static str = "extract_color_materials";
+
+    const PREPARE_LABEL: &'static str = "prepare_color_materials";
 }
 
 impl Material2d for ColorMaterial {

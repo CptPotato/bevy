@@ -815,4 +815,8 @@ impl RenderAsset for Mesh {
             layout: mesh_vertex_buffer_layout,
         })
     }
+
+    const EXTRACT_LABEL: &'static str = "extract_meshes";
+
+    const PREPARE_LABEL: &'static str = "prepare_meshes";
 }

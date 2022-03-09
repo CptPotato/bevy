@@ -11,7 +11,7 @@ pub use window::*;
 use crate::{
     camera::{ExtractedCamera, ExtractedCameraNames},
     prelude::Image,
-    render_asset::RenderAssets,
+    render_asset::{RenderAsset, RenderAssets},
     render_resource::{std140::AsStd140, DynamicUniformVec, Texture, TextureView},
     renderer::{RenderDevice, RenderQueue},
     texture::{BevyDefault, TextureCache},
@@ -35,7 +35,9 @@ impl Plugin for ViewPlugin {
                 .add_system_to_stage(RenderStage::Prepare, prepare_view_uniforms)
                 .add_system_to_stage(
                     RenderStage::Prepare,
-                    prepare_view_targets.after(WindowSystem::Prepare),
+                    prepare_view_targets
+                        .after(WindowSystem::Prepare)
+                        .after(<Image as RenderAsset>::PREPARE_LABEL),
                 );
         }
     }
