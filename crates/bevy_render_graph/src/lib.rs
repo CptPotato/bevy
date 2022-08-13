@@ -44,8 +44,9 @@ use std::{
 };
 
 /// Contains the default Bevy rendering backend based on wgpu.
-#[derive(Default)]
-pub struct RenderPlugin;
+pub struct RenderPlugin {
+    window_handle: bevy_window::RawWindowHandleWrapper, // TODO(ako): move this to a resource?
+}
 
 /// The labels of the default App rendering stages.
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
@@ -127,16 +128,15 @@ impl Plugin for RenderPlugin {
         if let Some(backends) = options.backends {
             let instance = wgpu::Instance::new(backends);
             let surface = {
-                let windows = app.world.resource_mut::<bevy_window::Windows>();
-                let raw_handle = windows.get_primary().map(|window| unsafe {
-                    let handle = window.raw_window_handle().get_handle();
+                let raw_handle = unsafe {
+                    let handle = self.window_handle.get_handle();
                     instance.create_surface(&handle)
-                });
+                };
                 raw_handle
             };
             let request_adapter_options = wgpu::RequestAdapterOptions {
                 power_preference: options.power_preference,
-                compatible_surface: surface.as_ref(),
+                compatible_surface: Some(&surface),
                 ..Default::default()
             };
             let (device, queue, adapter_info) = futures_lite::future::block_on(
@@ -180,8 +180,7 @@ impl Plugin for RenderPlugin {
                 .add_stage(
                     RenderStage::Render,
                     SystemStage::parallel()
-                        .with_system(PipelineCache::process_pipeline_queue_system)
-                        // .with_system(render_system.exclusive_system().at_end()), 
+                        .with_system(PipelineCache::process_pipeline_queue_system), // .with_system(render_system.exclusive_system().at_end()),
                 )
                 .add_stage(RenderStage::Cleanup, SystemStage::parallel())
                 .init_resource::<RenderGraph>()
