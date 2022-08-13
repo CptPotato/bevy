@@ -1,6 +1,5 @@
 extern crate core;
 
-pub mod color;
 pub mod extract_component;
 mod extract_param;
 pub mod extract_resource;
@@ -19,7 +18,6 @@ pub use extract_param::Extract;
 pub mod prelude {
     #[doc(hidden)]
     pub use crate::{
-        color::Color,
         mesh::{shape, Mesh},
         render_resource::Shader,
         texture::{Image, ImageSettings},
@@ -29,7 +27,6 @@ pub mod prelude {
 pub use once_cell;
 
 use crate::{
-    color::Color,
     mesh::MeshPlugin,
     primitives::{CubemapFrusta, Frustum},
     render_graph::RenderGraph,
@@ -125,8 +122,7 @@ impl Plugin for RenderPlugin {
         app.add_asset::<Shader>()
             .add_debug_asset::<Shader>()
             .init_asset_loader::<ShaderLoader>()
-            .init_debug_asset_loader::<ShaderLoader>()
-            .register_type::<Color>();
+            .init_debug_asset_loader::<ShaderLoader>();
 
         if let Some(backends) = options.backends {
             let instance = wgpu::Instance::new(backends);
