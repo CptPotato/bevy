@@ -48,6 +48,7 @@ render = [
   "bevy_internal/bevy_pbr",
   "bevy_internal/bevy_gltf",
   "bevy_internal/bevy_render",
+  "bevy_internal/bevy_render_graph",
   "bevy_internal/bevy_sprite",
   "bevy_internal/bevy_text",
   "bevy_internal/bevy_ui",
@@ -63,6 +64,7 @@ bevy_gilrs = ["bevy_internal/bevy_gilrs"]
 bevy_gltf = ["bevy_internal/bevy_gltf"]
 bevy_pbr = ["bevy_internal/bevy_pbr"]
 bevy_render = ["bevy_internal/bevy_render"]
+bevy_render_graph = ["bevy_internal/bevy_render_graph"]
 bevy_scene = ["bevy_internal/bevy_scene"]
 bevy_sprite = ["bevy_internal/bevy_sprite"]
 bevy_text = ["bevy_internal/bevy_text"]
