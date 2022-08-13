@@ -1,16 +1,14 @@
 pub use bevy_render_graph_macros::AsBindGroup;
-use encase::ShaderType;
+// use encase::ShaderType;
 
-use crate::{
-    prelude::Image,
-    render_asset::RenderAssets,
-    render_resource::{BindGroupLayout, Buffer, Sampler, TextureView},
-    renderer::RenderDevice,
-    texture::FallbackImage,
-};
+// use crate::{
+    // render_asset::RenderAssets,
+    // render_resource::{BindGroupLayout, Buffer, Sampler, TextureView},
+    // renderer::RenderDevice,
+// };
 use bevy_reflect::Uuid;
 use std::{ops::Deref, sync::Arc};
-use wgpu::BindingResource;
+// use wgpu::BindingResource;
 
 /// A [`BindGroup`] identifier.
 #[derive(Copy, Clone, Hash, Eq, PartialEq, Debug)]
@@ -54,6 +52,7 @@ impl Deref for BindGroup {
     }
 }
 
+/*
 /// Converts a value to a [`BindGroup`] with a given [`BindGroupLayout`], which can then be used in Bevy shaders.
 /// This trait can be derived (and generally should be). Read on for details and examples.
 ///
@@ -307,3 +306,4 @@ where
         self.into()
     }
 }
+*/

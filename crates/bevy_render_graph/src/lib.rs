@@ -9,16 +9,12 @@ pub mod render_phase;
 pub mod render_resource;
 pub mod renderer;
 pub mod settings;
-pub mod texture;
 
 pub use extract_param::Extract;
 
 pub mod prelude {
     #[doc(hidden)]
-    pub use crate::{
-        render_resource::Shader,
-        texture::{Image, ImageSettings},
-    };
+    pub use crate::render_resource::Shader;
 }
 
 pub use once_cell;
@@ -27,7 +23,6 @@ use crate::{
     render_graph::RenderGraph,
     render_resource::{PipelineCache, Shader, ShaderLoader},
     renderer::RenderInstance,
-    texture::ImagePlugin,
 };
 use bevy_app::{App, AppLabel, Plugin};
 use bevy_asset::{AddAsset, AssetServer};
@@ -287,10 +282,6 @@ impl Plugin for RenderGraphPlugin {
                 }
             });
         }
-
-        // NOTE: Load this after renderer initialization so that it knows about the supported
-        // compressed texture formats
-        app.add_plugin(ImagePlugin);
     }
 }
 
