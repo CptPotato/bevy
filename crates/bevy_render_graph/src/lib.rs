@@ -43,8 +43,8 @@ use std::{
     ops::{Deref, DerefMut},
 };
 
-/// Contains the default Bevy rendering backend based on wgpu.
-pub struct RenderPlugin {
+/// Contains the Bevy render graph and default rendering backend based on wgpu.
+pub struct RenderGraphPlugin {
     window_handle: bevy_window::RawWindowHandleWrapper, // TODO(ako): move this to a resource?
 }
 
@@ -101,17 +101,11 @@ impl DerefMut for MainWorld {
     }
 }
 
-pub mod main_graph {
-    pub mod node {
-        pub const CAMERA_DRIVER: &str = "camera_driver";
-    }
-}
-
 /// A Label for the rendering sub-app.
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, AppLabel)]
 pub struct RenderApp;
 
-impl Plugin for RenderPlugin {
+impl Plugin for RenderGraphPlugin {
     /// Initializes the renderer, sets up the [`RenderStage`](RenderStage) and creates the rendering sub-app.
     fn build(&self, app: &mut App) {
         let options = app
