@@ -1,10 +1,6 @@
-use crate::{
-    camera::Viewport,
-    prelude::Color,
-    render_resource::{
-        BindGroup, BindGroupId, Buffer, BufferId, BufferSlice, RenderPipeline, RenderPipelineId,
-        ShaderStages,
-    },
+use crate::render_resource::{
+    BindGroup, BindGroupId, Buffer, BufferId, BufferSlice, RenderPipeline, RenderPipelineId,
+    ShaderStages,
 };
 use bevy_utils::tracing::trace;
 use std::ops::Range;
@@ -337,20 +333,6 @@ impl<'a> TrackedRenderPass<'a> {
             .set_viewport(x, y, width, height, min_depth, max_depth);
     }
 
-    /// Set the rendering viewport to the given [`Camera`](crate::camera::Viewport) [`Viewport`].
-    ///
-    /// Subsequent draw calls will be projected into that viewport.
-    pub fn set_camera_viewport(&mut self, viewport: &Viewport) {
-        self.set_viewport(
-            viewport.physical_position.x as f32,
-            viewport.physical_position.y as f32,
-            viewport.physical_size.x as f32,
-            viewport.physical_size.y as f32,
-            viewport.depth.start,
-            viewport.depth.end,
-        );
-    }
-
     /// Insert a single debug marker.
     ///
     /// This is a GPU debugging feature. This has no effect on the rendering itself.
@@ -401,8 +383,8 @@ impl<'a> TrackedRenderPass<'a> {
         self.pass.pop_debug_group();
     }
 
-    pub fn set_blend_constant(&mut self, color: Color) {
+    pub fn set_blend_constant(&mut self, color: wgpu::Color) {
         trace!("set blend constant: {:?}", color);
-        self.pass.set_blend_constant(wgpu::Color::from(color));
+        self.pass.set_blend_constant(color);
     }
 }

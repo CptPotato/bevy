@@ -1,50 +1,41 @@
 extern crate core;
 
-pub mod camera;
 pub mod color;
 pub mod extract_component;
 mod extract_param;
 pub mod extract_resource;
 pub mod mesh;
 pub mod primitives;
-pub mod rangefinder;
 pub mod render_asset;
 pub mod render_graph;
 pub mod render_phase;
 pub mod render_resource;
 pub mod renderer;
 pub mod settings;
-mod spatial_bundle;
 pub mod texture;
-pub mod view;
 
 pub use extract_param::Extract;
 
 pub mod prelude {
     #[doc(hidden)]
     pub use crate::{
-        camera::{Camera, OrthographicProjection, PerspectiveProjection, Projection},
         color::Color,
         mesh::{shape, Mesh},
         render_resource::Shader,
-        spatial_bundle::SpatialBundle,
         texture::{Image, ImageSettings},
-        view::{ComputedVisibility, Msaa, Visibility, VisibilityBundle},
     };
 }
 
 pub use once_cell;
 
 use crate::{
-    camera::CameraPlugin,
     color::Color,
     mesh::MeshPlugin,
     primitives::{CubemapFrusta, Frustum},
     render_graph::RenderGraph,
     render_resource::{PipelineCache, Shader, ShaderLoader},
-    renderer::{render_system, RenderInstance},
+    renderer::RenderInstance,
     texture::ImagePlugin,
-    view::{ViewPlugin, WindowRenderPlugin},
 };
 use bevy_app::{App, AppLabel, Plugin};
 use bevy_asset::{AddAsset, AssetServer};
@@ -194,7 +185,7 @@ impl Plugin for RenderPlugin {
                     RenderStage::Render,
                     SystemStage::parallel()
                         .with_system(PipelineCache::process_pipeline_queue_system)
-                        .with_system(render_system.exclusive_system().at_end()),
+                        // .with_system(render_system.exclusive_system().at_end()), 
                 )
                 .add_stage(RenderStage::Cleanup, SystemStage::parallel())
                 .init_resource::<RenderGraph>()
@@ -315,10 +306,7 @@ impl Plugin for RenderPlugin {
             });
         }
 
-        app.add_plugin(WindowRenderPlugin)
-            .add_plugin(CameraPlugin)
-            .add_plugin(ViewPlugin)
-            .add_plugin(MeshPlugin)
+        app.add_plugin(MeshPlugin)
             // NOTE: Load this after renderer initialization so that it knows about the supported
             // compressed texture formats
             .add_plugin(ImagePlugin);

@@ -2,21 +2,22 @@ mod graph_runner;
 mod render_device;
 
 use bevy_derive::{Deref, DerefMut};
-use bevy_utils::tracing::{error, info, info_span};
+use bevy_utils::tracing::info;
 pub use graph_runner::*;
 pub use render_device::*;
 
 use crate::{
-    render_graph::RenderGraph,
+    // render_graph::RenderGraph,
     settings::{WgpuSettings, WgpuSettingsPriority},
-    view::{ExtractedWindows, ViewTarget},
+    // view::{ExtractedWindows, ViewTarget},
 };
 use bevy_ecs::prelude::*;
-use bevy_time::TimeSender;
-use bevy_utils::Instant;
+// use bevy_time::TimeSender;
+// use bevy_utils::Instant;
 use std::sync::Arc;
 use wgpu::{AdapterInfo, CommandEncoder, Instance, Queue, RequestAdapterOptions};
 
+/*
 /// Updates the [`RenderGraph`] with all of its nodes and then runs it to render the entire frame.
 pub fn render_system(world: &mut World) {
     world.resource_scope(|world, mut graph: Mut<RenderGraph>| {
@@ -83,6 +84,7 @@ pub fn render_system(world: &mut World) {
         "The TimeSender channel should always be empty during render. You might need to add the bevy::core::time_system to your app.",
     );
 }
+*/
 
 /// This queue is used to enqueue tasks for the GPU to execute asynchronously.
 #[derive(Resource, Clone, Deref, DerefMut)]
