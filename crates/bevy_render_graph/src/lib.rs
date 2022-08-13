@@ -3,8 +3,6 @@ extern crate core;
 pub mod extract_component;
 mod extract_param;
 pub mod extract_resource;
-pub mod mesh;
-pub mod primitives;
 pub mod render_asset;
 pub mod render_graph;
 pub mod render_phase;
@@ -18,7 +16,6 @@ pub use extract_param::Extract;
 pub mod prelude {
     #[doc(hidden)]
     pub use crate::{
-        mesh::{shape, Mesh},
         render_resource::Shader,
         texture::{Image, ImageSettings},
     };
@@ -27,8 +24,6 @@ pub mod prelude {
 pub use once_cell;
 
 use crate::{
-    mesh::MeshPlugin,
-    primitives::{CubemapFrusta, Frustum},
     render_graph::RenderGraph,
     render_resource::{PipelineCache, Shader, ShaderLoader},
     renderer::RenderInstance,
@@ -141,9 +136,7 @@ impl Plugin for RenderGraphPlugin {
             app.insert_resource(device.clone())
                 .insert_resource(queue.clone())
                 .insert_resource(adapter_info.clone())
-                .init_resource::<ScratchMainWorld>()
-                .register_type::<Frustum>()
-                .register_type::<CubemapFrusta>();
+                .init_resource::<ScratchMainWorld>();
 
             let pipeline_cache = PipelineCache::new(device.clone());
             let asset_server = app.world.resource::<AssetServer>().clone();
@@ -295,10 +288,9 @@ impl Plugin for RenderGraphPlugin {
             });
         }
 
-        app.add_plugin(MeshPlugin)
-            // NOTE: Load this after renderer initialization so that it knows about the supported
-            // compressed texture formats
-            .add_plugin(ImagePlugin);
+        // NOTE: Load this after renderer initialization so that it knows about the supported
+        // compressed texture formats
+        app.add_plugin(ImagePlugin);
     }
 }
 
